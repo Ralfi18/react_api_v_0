@@ -14,7 +14,7 @@ class App extends Component {
     const localStorageBooks = localStorage.getItem(table);
     if (localStorage){
       return JSON.parse(localStorageBooks);
-    } 
+    }
     return false;
   };
 

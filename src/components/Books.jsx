@@ -13,11 +13,36 @@ class Books extends Component {
     this.loadBooks();
   }
 
+  getUserData = (table) => {
+    const localStorageBooks = localStorage.getItem(table);
+    if (localStorage){
+      return JSON.parse(localStorageBooks);
+    } else {
+      console.log('np localStorage');
+    }
+  };
+
+  getToken = () => {
+    const localStorageBooks = localStorage.getItem('user');
+    if (localStorage){
+      return JSON.parse(localStorageBooks).token || null;
+    }
+    return null;
+  }
+
   loadBooks = () => {
     const _this = this;
     fetch('http://api-ci.loc/books', {
       method: 'post',
-      mode: 'cors',
+      mode: "cors", // no-cors, cors, *same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      // credentials: "same-origin", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: JSON.stringify({
+        token: this.getToken() ? this.getToken() : null ,
+      })
     })
     .then(function(response) {
       return response.json();
@@ -25,7 +50,6 @@ class Books extends Component {
     .then(function(myJson) {
       if (localStorage){
         localStorage.setItem('books',  JSON.stringify(myJson))
-      } else {
       }
       _this.setState({ books: myJson });
     });
@@ -33,8 +57,8 @@ class Books extends Component {
 
   handleChange = (event) => {
     const name = event.target.name;
-    const id = event.target.value;
-    this.setState({ id });
+    const value = event.target.value;
+    this.setState({ [name]: value });
   };
 
   handleSubmit = (event) => {
@@ -53,7 +77,10 @@ class Books extends Component {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: JSON.stringify({
-        title: _this.state.title || "no id"
+        title: _this.state.title,
+        author: _this.state.author,
+        price: _this.state.price,
+        token: this.getToken() ? this.getToken() : null ,
       })
     })
     .then(response => {
@@ -86,9 +113,9 @@ class Books extends Component {
           'No books'
         }
         <form action="" onSubmit={this.handleSubmit} >
-          <input type="text" name='id' placeholder='title' value={this.state.title} onChange={this.handleChange} />
-          <input type="text" name='id' placeholder='author' value={this.state.author} onChange={this.handleChange} />
-          <input type="text" name='id' placeholder='price' value={this.state.price} onChange={this.handleChange} />
+          <input type="text" name='title' placeholder='title' value={this.state.title} onChange={this.handleChange} />
+          <input type="text" name='author' placeholder='author' value={this.state.author} onChange={this.handleChange} />
+          <input type="text" name='price' placeholder='price' value={this.state.price} onChange={this.handleChange} />
           <input type="submit" value='Submit'/>
         </form>
       </div>

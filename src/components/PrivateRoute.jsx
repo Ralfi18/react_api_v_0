@@ -2,21 +2,21 @@ import React from 'react';
 import { Route, Redirect, withRouter } from 'react-router-dom';
 // import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import {getData} from '../DbHelpers/storageHelper';
 
-
-const user = (table) => {
-  const localStorageBooks = localStorage.getItem(table);
-  if (localStorage){
-    return JSON.parse(localStorageBooks);
-  } 
-  return false;
-};
+// const user = (table) => {
+//   const localStorageBooks = localStorage.getItem(table);
+//   if (localStorage){
+//     return JSON.parse(localStorageBooks);
+//   }
+//   return false;
+// };
 
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render = {(props) =>
-      user('user') && user('user').isAuth === "1" ? (
+      getData('user') && getData('user').isAuth === "1" ? (
         <Component {...props} />
       ) : (
         <Redirect to="/login" />
